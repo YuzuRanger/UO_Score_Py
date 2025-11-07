@@ -12,6 +12,7 @@ Python script to identify and record answers from half sheet bubble forms and th
 ### How do I get started?
 If you are using half-sheet bubble forms:
 - Download the latest Half Sheet Distribution zip file. Extract.
+
 If you are using full-sheet UO Score bubble forms:
 - (COMING SOON) Download the latest Full Sheet Distribution zip file. Extract.
 
