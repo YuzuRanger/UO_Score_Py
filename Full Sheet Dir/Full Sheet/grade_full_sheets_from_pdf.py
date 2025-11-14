@@ -347,17 +347,17 @@ def process_scanned_page(image, student):
             break
         
         if column_iterator == 0:
-            test_form_grid = numpy_array_values[35:54, 0:5]
+            test_form_grid = numpy_array_values[35:55, 0:5]
         elif column_iterator == 1:
-            test_form_grid = numpy_array_values[35:54, 8:13]
+            test_form_grid = numpy_array_values[35:55, 8:13]
         elif column_iterator == 2:
-            test_form_grid = numpy_array_values[35:54, 16:21]
+            test_form_grid = numpy_array_values[35:55, 16:21]
         elif column_iterator == 3:
-            test_form_grid = numpy_array_values[35:54, 24:29]
+            test_form_grid = numpy_array_values[35:55, 24:29]
         elif column_iterator == 4:
-            test_form_grid = numpy_array_values[35:54, 32:37]
+            test_form_grid = numpy_array_values[35:55, 32:37]
         elif column_iterator == 5:
-            test_form_grid = numpy_array_values[35:54, 40:45]
+            test_form_grid = numpy_array_values[35:55, 40:45]
 
         for detections in test_form_grid:
             if question_iterator > count_limit:
@@ -416,7 +416,7 @@ def main():
 
     answer_key_dir = script_dir + "\\Answer Key"
 
-    output_csv = script_dir + "\\output\\Full-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d')) + ".csv"
+    output_csv = script_dir + "\\output\\Full-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
 
     # Delete any previous pngs saved of answers
     output_images_dir = script_dir + "\\Output"
@@ -481,9 +481,24 @@ def main():
                 num_pages = len(reader.pages)
                 print(f"The PDF has {num_pages} pages.")
 
-                print("processing pages_as_images")
-                pages_as_images = convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path, first_page=1, last_page=10) 
-                print("enumerating pages_as_images")
+                pages_as_images = list()
+                page_floor = num_pages // 50
+                page_modulo = num_pages % 50
+                start_page = 1
+                if page_floor > 0:
+                    for i in range(page_floor):
+                        end_page = start_page + 49
+                        print(f"Processing pages_as_images for {start_page} through {end_page} of {num_pages}...")
+                        pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path, 
+                                                                    first_page=start_page, last_page=end_page))
+                        start_page += 50
+                if page_modulo > 0:
+                    end_page = start_page + page_modulo - 1
+                    print(f"Processing pages_as_images for {start_page} through {end_page} of {num_pages}...")
+                    pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path, 
+                                        first_page=start_page, last_page=end_page))
+
+                print("PDF read successfully. Preparing to grade.")
                 for i, page_image_pil in enumerate(pages_as_images): 
                     student = f"Page_{i+1}"
                     print(student)
