@@ -14,7 +14,7 @@ If you are using half-sheet bubble forms:
 - Download the latest Half Sheet Distribution zip file. Extract.
 
 If you are using full-sheet UO Score bubble forms:
-- (COMING SOON) Download the latest Full Sheet Distribution zip file. Extract.
+- Download the latest Full Sheet Distribution zip file. Extract.
 
 ### What do I need?
 1. Open the extracted distribution folder.
