@@ -26,5 +26,6 @@ If you are using full-sheet UO Score bubble forms:
 Upon running the program, it will begin processing each page of the PDF to generate a list of answers for each student. Then, it will match answers to the answer key.
 The script will update you as it progresses and warn of any bubble forms which may need to be manually reviewed. Upon successful completion, check the *Output* folder for:
 - A csv of detected answers and scores based on the provided answer key.
+- A txt containing the logged alerts.
 - A series of png files of each sheet's answers. Detected filled answer bubbles will be labeled by a red box.
   - This allows you to check answers visually as well as verify that the correct region was identified in cases where automatic grid detection failed. 
