@@ -1,8 +1,9 @@
-# grade_full_sheets_from_pdf.py
+# grade_full_sheets_from_pdf_Mac.py
 
 # A Python script to grade full-page sheets scanned to PDFs (UO Score Form).
 # Adapted from R script to identify and record marks on the UO Score Answer form by Jeremy Piger
 # Assisted by M365 Copilot & Gemini
+# This is the version for Mac OS
 
 import cv2
 import numpy as np
