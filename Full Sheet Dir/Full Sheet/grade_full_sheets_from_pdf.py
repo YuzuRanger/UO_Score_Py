@@ -102,7 +102,7 @@ def image_to_grid(img, student):
     # print(f"Grid layout with dark pixel detection saved as {output_path}.")
     return detection_results
 
-def rotate_image(image, student):
+def rotate_image(image, student, log_file):
     # Reduce green
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -184,10 +184,10 @@ def rotate_image(image, student):
         # print(f"Image rotated by {angle:.2f} degrees using two contours.")
         return rotated
     else:
-        print("!! " + student + " Warning: Wrong number of contours (" + str(len(selected_contours)) + ") found for rotation. Verify answers on " + student + " or re-scan.")
+        custom_print("!! " + student + " Warning: Wrong number of contours (" + str(len(selected_contours)) + ") found for rotation. Verify answers on " + student + " or re-scan.", log_file)
         return image
 
-def crop_to_answers(image, student):
+def crop_to_answers(image, student, log_file):
     # Convert to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -223,7 +223,7 @@ def crop_to_answers(image, student):
     # if we are missing a few we will take our chances
     if  1 < len(selected_contours) <= 61:
         if len(selected_contours) != 61:
-            print("!! " + student + " Warning: Not enough contours (" + str(len(selected_contours)) + ") found for accurate cropping. Verify answers on " + student + ".")
+            custom_print("!! " + student + " Warning: Not enough contours (" + str(len(selected_contours)) + ") found for accurate cropping. Verify answers on " + student + ".", log_file)
         # print(selected_contours)
         # Compute centers
         y_corners = []
@@ -244,7 +244,7 @@ def crop_to_answers(image, student):
         # print(f"Image cropped using two contours.")
         return image
     else:
-        print("!! " + student + " Warning: Wrong number of contours (" + str(len(selected_contours)) + ") found for cropping. Verify answers on " + student + ".")
+        custom_print("!! " + student + " Warning: Wrong number of contours (" + str(len(selected_contours)) + ") found for cropping. Verify answers on " + student + ".", log_file)
         # Crop a region from (x_start, y_start) to (x_end, y_end)
         # Y values: the top row should start at about 480, and each 5th/10 qs is 500 px long. 
         # X values: Each bubble is 60px wide with 20px on each side as a margin, so 100px total width
@@ -254,7 +254,7 @@ def crop_to_answers(image, student):
         # cv2.imwrite(filename, image)
         return image
 
-def process_scanned_page(image, student): 
+def process_scanned_page(image, student, log_file): 
 
     """ 
     Processes a single image (one side of a scanned bubble form) and returns its score. 
@@ -285,7 +285,7 @@ def process_scanned_page(image, student):
         # print(id_num)
     except:
         id_num = 99
-        print("ID number unreadable on " + student)
+        custom_print("ID number unreadable on " + student, log_file)
 
     # Last Name
     test_form_grid = numpy_array_values[2:27, 0:14]
@@ -318,12 +318,12 @@ def process_scanned_page(image, student):
     test_num = ''.join(map(str, indices[0]))
     # print("test num:", test_num)
 
-    print(student, last_name, first_name, id_num, test_num)
+    custom_print(student+ ',' + last_name+ ',' + first_name + ',' + str(id_num) + ',' + str(test_num), log_file)
     if test_num:
         form = int(test_num)
     else:
         form = 99
-        print("Test Form number unreadable. Defaulting to Answer Key 1. Verify answers on " + student + " or re-scan.")
+        custom_print("Test Form number unreadable. Defaulting to Answer Key 1. Verify answers on " + student + " or re-scan.", log_file)
 
 
     if form == 1:
@@ -378,7 +378,7 @@ def process_scanned_page(image, student):
                     page_score += points 
             else:
                 answers.append("BLANK")
-                print("Blank answer detected for question:", question_iterator, "- Consider checking.")
+                custom_print("Blank answer detected for question:" + str(question_iterator) + "- Consider checking.", log_file)
             question_iterator += 1
         column_iterator += 1
 
@@ -407,6 +407,11 @@ def index_to_letter(number):
         return chr(ord('A') + number - 1)
     else:
         return ""
+    
+def custom_print(message_to_print, log_file):
+    print(message_to_print)
+    with open(log_file, 'a') as of:
+        of.write(message_to_print + '\n')
 
 def main():
 
@@ -417,6 +422,8 @@ def main():
     answer_key_dir = script_dir + "\\Answer Key"
 
     output_csv = script_dir + "\\output\\Full-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
+
+    log_file = script_dir + "\\output\\Log_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".txt"
 
     # Delete any previous pngs saved of answers
     output_images_dir = script_dir + "\\Output"
@@ -501,16 +508,16 @@ def main():
                 print("PDF read successfully. Preparing to grade.")
                 for i, page_image_pil in enumerate(pages_as_images): 
                     student = f"Page_{i+1}"
-                    print(student)
+                    custom_print(student, log_file)
                     # Convert PIL image to OpenCV format (numpy array) 
                     page_image_cv = cv2.cvtColor(np.array(page_image_pil), cv2.COLOR_RGB2BGR) 
                     # filename = "page_image_cv.png"
                     # cv2.imwrite(filename, page_image_cv)
 
-                    page_image_cv = rotate_image(page_image_cv, student)
-                    page_image_cv = crop_to_answers(page_image_cv, student)
+                    page_image_cv = rotate_image(page_image_cv, student, log_file)
+                    page_image_cv = crop_to_answers(page_image_cv, student, log_file)
 
-                    exam_results = process_scanned_page(page_image_cv, student) 
+                    exam_results = process_scanned_page(page_image_cv, student, log_file) 
 
                     # [page_score, answers, id_num, form, last_name, first_name]
                     # ["Scanned Page", "ID", "LastName", "FirstName", "Form", "Score"]
@@ -524,7 +531,7 @@ def main():
                 #     print(f"!! ERROR processing {filename}: {e}") 
                 #     writer.writerow(["ERROR"]) 
 
-    print(f"Batch processing complete. Scores saved to '{output_csv}'.") 
+    print(f"Batch processing complete. Scores saved to '{output_csv}'. Console alerts saved to '{log_file}'.") 
     input("Press Enter to exit...")
     # sys.exit(0)
 
