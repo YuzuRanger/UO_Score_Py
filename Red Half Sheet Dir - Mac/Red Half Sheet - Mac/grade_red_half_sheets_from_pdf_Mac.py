@@ -98,7 +98,7 @@ def image_to_grid(img, student):
 
     # Save the output image
     script_dir = get_parent_dir(os.path.dirname(os.path.abspath(__file__)))
-    output_path = script_dir + "\\output\\detected_answers-" + str(student) + '.png'
+    output_path = script_dir + "//Output//detected_answers-" + str(student) + '.png'
     img.save(output_path)
     # print(f"Grid layout with dark pixel detection saved as {output_path}.")
     return detection_results
@@ -470,9 +470,9 @@ def main():
                     if row_dict['Points']:
                         POINT_VALUES[index] = int(row_dict['Points'])
 
-        else:
-            print(f"!! No answer key csv found in '{answer_key_dir}'")
-            input("Press Enter to exit...")
+        # else:
+        #     print(f"!! No answer key csv found in '{answer_key_dir}'")
+        #     input("Press Enter to exit...")
             # sys.exit(1)
 
 
