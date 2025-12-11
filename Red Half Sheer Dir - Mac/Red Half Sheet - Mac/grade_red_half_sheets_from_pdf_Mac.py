@@ -434,16 +434,16 @@ def main():
 
     script_dir = get_parent_dir(os.path.dirname(os.path.abspath(__file__)))
 
-    input_dir = script_dir + "\\input"
+    input_dir = script_dir + "//input"
 
-    answer_key_dir = script_dir + "\\Answer Key"
+    answer_key_dir = script_dir + "//Answer Key"
 
-    output_csv = script_dir + "\\output\\Full-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
+    output_csv = script_dir + "//output//Full-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
 
-    log_file = script_dir + "\\output\\Log_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".txt"
+    log_file = script_dir + "//output//Log_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".txt"
 
     # Delete any previous pngs saved of answers
-    output_images_dir = script_dir + "\\Output"
+    output_images_dir = script_dir + "//Output"
     for filename in os.listdir(output_images_dir):
         if filename.endswith('.png'):
             file_path = os.path.join(output_images_dir, filename)
@@ -495,8 +495,8 @@ def main():
 
             if filename.lower().endswith('.pdf'):
 
-                pdf_path = os.path.join(input_dir, filename)
-                local_poppler_path = script_dir + "\\poppler-25.07.0\\Library\\bin"
+                pdf_path = os.path.join(input_dir, filename) 
+                local_poppler_path = script_dir + "/poppler-25.11.0/bin"
 
             # try:
                 reader = PdfReader(pdf_path)
