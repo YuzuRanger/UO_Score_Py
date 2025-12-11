@@ -10,8 +10,11 @@ Python script to identify and record answers from half sheet bubble forms and th
 
 ## About the App
 ### How do I get started?
-If you are using half-sheet bubble forms:
+If you are using :green_heart:GREEN half-sheet bubble forms:
 - Download the latest Half Sheet Distribution zip file. Extract.
+
+If you are using :heart:RED half-sheet bubble forms:
+- Download the latest Red Half Sheet Distribution zip file. Extract.
 
 If you are using full-sheet UO Score bubble forms:
 - Download the latest Full Sheet Distribution zip file. Extract.
