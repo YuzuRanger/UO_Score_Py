@@ -1,4 +1,4 @@
-# grade_half_sheets_from_pdf.py
+# grade_half_sheets_from_pdf_Mac.py
 
 # A Python script to grade half sheets scanned to PDFs.
 # Adapted from R script to identify and record marks on the UO Score Answer form by Jeremy Piger
@@ -92,7 +92,7 @@ def image_to_grid(img, student):
 
     # Save the output image
     script_dir = get_parent_dir(os.path.dirname(os.path.abspath(__file__)))
-    output_path = script_dir + "\\output\\detected_answers-" + str(student) + '.png'
+    output_path = script_dir + "//Output//detected_answers-" + str(student) + '.png'
     img.save(output_path)
     # print(f"Grid layout with dark pixel detection saved as {output_path}.")
     return detection_results
@@ -313,15 +313,15 @@ def main():
 
     script_dir = get_parent_dir(os.path.dirname(os.path.abspath(__file__)))
 
-    input_dir = script_dir + "\\input"
+    input_dir = script_dir + "//input"
 
-    answer_key_dir = script_dir + "\\Answer Key"
+    answer_key_dir = script_dir + "//Answer Key"
 
-    output_csv = script_dir + "\\output\\Half-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
-    log_file = script_dir + "\\output\\Log_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".txt"
+    output_csv = script_dir + "//output//Half-Sheet_Results_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
+    log_file = script_dir + "//output//Log_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".txt"
 
     # Delete any previous pngs saved of answers
-    output_images_dir = script_dir + "\\Output"
+    output_images_dir = script_dir + "//Output"
     for filename in os.listdir(output_images_dir):
         if filename.endswith('.png'):
             file_path = os.path.join(output_images_dir, filename)
@@ -378,7 +378,7 @@ def main():
             if filename.lower().endswith('.pdf'): 
 
                 pdf_path = os.path.join(input_dir, filename) 
-                local_poppler_path = script_dir + "\\poppler-25.07.0\\Library\\bin"
+                local_poppler_path = script_dir + "/poppler-25.11.0/bin"
 
                 # try:
                 reader = PdfReader(pdf_path)
