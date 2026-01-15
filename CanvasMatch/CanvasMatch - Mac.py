@@ -8,10 +8,10 @@ class Student:
     """
     Data Structure for holding student ID and Score
     """
-    def __init__(self, id, score, sis_user_id="", sis_login="", name=""):
-        self.id = id
+    def __init__(self, sis_user_id, score, id="", sis_login="", name=""):
+        self.sis_user_id = sis_user_id # 95 number
         self.score = score
-        self.sis_user_id = sis_user_id
+        self.id = id
         self.sis_login = sis_login
         self.name = name
 
@@ -32,13 +32,13 @@ def canvas_match_results(results_file_path, canvas_roster_file_path):
     with open(canvas_roster_file_path, 'r', newline='') as roster_file:
         csv_dict_reader = csv.DictReader(roster_file)
         for row_dict in csv_dict_reader:
-            target_uoid = row_dict['ID']
-            found_student = next((obj for obj in students if obj.id == target_uoid), None)
+            target_uoid = row_dict['SIS User ID']
+            found_student = next((obj for obj in students if obj.sis_user_id == target_uoid), None)
             # print(row_dict)
             # print(found_student)
             if found_student:
                 # print(found_student.id)
-                found_student.sis_user_id = row_dict['SIS User ID']
+                found_student.id = row_dict['ID']
                 found_student.sis_login = row_dict['SIS Login ID']
                 found_student.name = row_dict['Student']
                 found_students.append(found_student)
