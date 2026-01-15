@@ -15,8 +15,11 @@ class Student:
         self.sis_login = sis_login
         self.name = name
 
+def get_parent_dir(directory):
+    return os.path.dirname(directory)
+
 def canvas_match_results(results_file_path, canvas_roster_file_path):
-    output_csv = os.path.dirname(os.path.abspath(__file__)) + "\\Output_for_PS2CANVAS_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
+    output_csv = get_parent_dir(os.path.dirname(os.path.abspath(__file__))) + "\\Output_for_PS2CANVAS_" + str(datetime.now().strftime('%Y-%m-%d-%H-%M')) + ".csv"
     
     students = []
     with open(results_file_path, 'r', newline='') as results_file:
@@ -66,7 +69,7 @@ def select_file():
     print("Select a UO Score Results File")
     # Open the file dialog and get the selected file path
     results_file_path = filedialog.askopenfilename(
-        initialdir = os.path.dirname(os.path.abspath(__file__)),
+        initialdir = get_parent_dir(os.path.dirname(os.path.abspath(__file__))),
         title = "Select a UO Score Results File", # Sets the dialog title
         filetypes = [('CSV Files', '*.csv'), ('All Files', '*.*')] # Filters file types
     )
@@ -75,7 +78,7 @@ def select_file():
         print(f"Selected UO Score Results File: {results_file_path}")
         print("Select a Canvas Roster File")
         canvas_roster_file_path = filedialog.askopenfilename(
-            initialdir = os.path.dirname(os.path.abspath(__file__)),
+            initialdir = get_parent_dir(os.path.dirname(os.path.abspath(__file__))),
             title = "Select a Canvas Roster File", # Sets the dialog title
             filetypes = [('CSV Files', '*.csv'), ('All Files', '*.*')] # Filters file types
         )
@@ -91,3 +94,4 @@ def select_file():
 
 if __name__ == "__main__":
     select_file()
+    input("Press Enter to exit...")
