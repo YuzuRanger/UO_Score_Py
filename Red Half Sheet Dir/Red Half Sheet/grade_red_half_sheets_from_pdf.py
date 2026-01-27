@@ -385,13 +385,17 @@ def process_scanned_page(image, student, log_file):
                 true_indices = ''.join(map(str, true_indices[0]))
                 # print(true_indices)
                 # defaults to first selected answer, add support for multi later
-                answers.append(CHOICE_INDEX[int(true_indices[0])])
+                first_selected_answer = int(true_indices[0])
+                answers.append(CHOICE_INDEX[first_selected_answer])
                 correct_answer = answer_key.get(question_iterator - 1)
                 # print("true indices", true_indices)
                 # print("correct answer", correct_answer)
-                if int(true_indices) == correct_answer:
+                if int(first_selected_answer) == correct_answer:
                     points = POINT_VALUES.get(question_iterator - 1, DEFAULT_POINTS)
                     page_score += points
+                    # print(question_iterator, "correct. points:", page_score)
+                # else:
+                    # print(question_iterator, "incorrect. answered: ", first_selected_answer, "correct was:", correct_answer)
             else:
                 answers.append("BLANK")
                 custom_print("Blank answer detected for question:" + str(question_iterator) + "- Consider checking.", log_file)
