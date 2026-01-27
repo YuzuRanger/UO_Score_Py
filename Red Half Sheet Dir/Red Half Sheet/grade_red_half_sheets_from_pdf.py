@@ -388,8 +388,11 @@ def process_scanned_page(image, student, log_file):
                 first_selected_answer = int(true_indices[0])
                 answers.append(CHOICE_INDEX[first_selected_answer])
                 correct_answer = answer_key.get(question_iterator - 1)
-                # print("true indices", true_indices)
+                # print("true indices", true_indices, "first selected answer", first_selected_answer)
                 # print("correct answer", correct_answer)
+                if len(true_indices) > 1:
+                    custom_print("Multiple answers detected for question:" + str(question_iterator) + "- Consider checking.", log_file)
+
                 if int(first_selected_answer) == correct_answer:
                     points = POINT_VALUES.get(question_iterator - 1, DEFAULT_POINTS)
                     page_score += points
