@@ -103,7 +103,7 @@ def image_to_grid(img, student):
     return detection_results
 
 def rotate_image(image, student, log_file):
-    # Reduce green
+    # Reduce red
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # Define the range for the red color in HSV
@@ -388,6 +388,7 @@ def process_scanned_page(image, student, log_file):
                 first_selected_answer = int(true_indices[0])
                 answers.append(CHOICE_INDEX[first_selected_answer])
                 correct_answer = answer_key.get(question_iterator - 1)
+                # print(correct_answer)
                 # print("true indices", true_indices, "first selected answer", first_selected_answer)
                 # print("correct answer", correct_answer)
                 if len(true_indices) > 1:
@@ -397,8 +398,14 @@ def process_scanned_page(image, student, log_file):
                     points = POINT_VALUES.get(question_iterator - 1, DEFAULT_POINTS)
                     page_score += points
                     # print(question_iterator, "correct. points:", page_score)
+                elif type(correct_answer) is list:
+                    # print("multiple acceptable answers")
+                    if int(first_selected_answer) in correct_answer:
+                        points = POINT_VALUES.get(question_iterator - 1, DEFAULT_POINTS)
+                        page_score += points
+                        custom_print(str(question_iterator) + " - answer in list of acceptable answers.", log_file) 
                 # else:
-                    # print(question_iterator, "incorrect. answered: ", first_selected_answer, "correct was:", correct_answer)
+                #     print(question_iterator, "incorrect. answered: ", first_selected_answer, "correct was:", correct_answer)
             else:
                 answers.append("BLANK")
                 custom_print("Blank answer detected for question:" + str(question_iterator) + "- Consider checking.", log_file)
@@ -464,9 +471,18 @@ def main():
             with open(answer_key_path, 'r', newline='') as answer_key:
                 csv_dict_reader = csv.DictReader(answer_key)
                 for index, row_dict in enumerate(csv_dict_reader, start=0):
-                    # print(index)
-                    # print(row_dict)
-                    ANSWER_KEY_1[index] = CHOICE_INDEX.index(row_dict['Form 1'])
+                    print(index)
+                    print(row_dict)
+                    answer = row_dict['Form 1']
+                    if len(answer) > 1:
+                        # print("multiple answers")
+                        list_answers = []
+                        for letter in answer:
+                            list_answers.append(CHOICE_INDEX.index(letter))
+                        ANSWER_KEY_1[index] = list_answers
+                    else:
+                        ANSWER_KEY_1[index] = CHOICE_INDEX.index(answer)
+
                     if row_dict['Form 2']:
                         ANSWER_KEY_2[index] = CHOICE_INDEX.index(row_dict['Form 2'])
                     if row_dict['Form 3']:
