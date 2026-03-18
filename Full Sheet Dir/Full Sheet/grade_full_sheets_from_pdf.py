@@ -369,11 +369,15 @@ def process_scanned_page(image, student, log_file):
                 true_indices = ''.join(map(str, true_indices[0]))
                 # print(true_indices)
                 # defaults to first selected answer, add support for multi later
-                answers.append(CHOICE_INDEX[int(true_indices[0])])
-                correct_answer = answer_key.get(question_iterator - 1) 
+                first_selected_answer = int(true_indices[0])
+                answers.append(CHOICE_INDEX[first_selected_answer])
+                correct_answer = answer_key.get(question_iterator - 1)
                 # print("true indices", true_indices)
                 # print("correct answer", correct_answer)
-                if int(true_indices) == correct_answer:
+                if len(true_indices) > 1:
+                    custom_print("Multiple answers detected for question:" + str(question_iterator) + "- Consider checking.", log_file)
+
+                if int(first_selected_answer) == correct_answer:
                     points = POINT_VALUES.get(question_iterator - 1, DEFAULT_POINTS) 
                     page_score += points 
             else:
@@ -413,6 +417,13 @@ def custom_print(message_to_print, log_file):
     with open(log_file, 'a') as of:
         of.write(message_to_print + '\n')
 
+def image_processor_generator(directory):
+    for filename in os.listdir(directory):
+        if filename.endswith(('.png', '.jpg', '.jpeg')):
+            path = os.path.join(directory, filename)
+            with Image.open(path) as img:
+                yield img # Yields one image object at a time
+
 def main():
 
     script_dir = get_parent_dir(os.path.dirname(os.path.abspath(__file__)))
@@ -432,6 +443,12 @@ def main():
             file_path = os.path.join(output_images_dir, filename)
             os.remove(file_path)
             # print(f"Deleted: {filename}")
+    # clean up last run in input dir as well if needed
+    for filename in os.listdir(input_dir):
+        if filename.endswith('.png'):
+            file_path = os.path.join(input_dir, filename)
+            os.remove(file_path)
+
 
     for ak_filename in sorted(os.listdir(answer_key_dir)): 
         if ak_filename.lower().endswith('.csv'): 
@@ -488,7 +505,7 @@ def main():
                 num_pages = len(reader.pages)
                 print(f"The PDF has {num_pages} pages.")
 
-                pages_as_images = list()
+                # pages_as_images = list()
                 page_floor = num_pages // 50
                 page_modulo = num_pages % 50
                 start_page = 1
@@ -496,17 +513,30 @@ def main():
                     for i in range(page_floor):
                         end_page = start_page + 49
                         print(f"Processing pages_as_images for {start_page} through {end_page} of {num_pages}...")
-                        pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path, 
-                                                                    first_page=start_page, last_page=end_page))
+                        # pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
+                        #                                             first_page=start_page, last_page=end_page))
+                        images = convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
+                                                                    first_page=start_page, last_page=end_page)
+                        
+                        for j, img in enumerate(images):
+                            output_path = input_dir + "\\processed-" + str(j) + "-" + str(i) + '.png'
+                            img.save(output_path)
+                        del images
                         start_page += 50
                 if page_modulo > 0:
                     end_page = start_page + page_modulo - 1
                     print(f"Processing pages_as_images for {start_page} through {end_page} of {num_pages}...")
-                    pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path, 
-                                        first_page=start_page, last_page=end_page))
+                    # pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
+                    #                     first_page=start_page, last_page=end_page))
+                    images = convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
+                                                                    first_page=start_page, last_page=end_page)
+                    for i, img in enumerate(images):
+                        output_path = input_dir + "\\processed-" + str(i) + '.png'
+                        img.save(output_path)
+                    del images
 
                 print("PDF read successfully. Preparing to grade.")
-                for i, page_image_pil in enumerate(pages_as_images): 
+                for i, page_image_pil in enumerate(image_processor_generator(input_dir)):
                     student = f"Page_{i+1}"
                     custom_print(student, log_file)
                     # Convert PIL image to OpenCV format (numpy array) 
