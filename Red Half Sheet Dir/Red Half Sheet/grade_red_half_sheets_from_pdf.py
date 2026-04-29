@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw
 from datetime import datetime
 import math
 from pypdf import PdfReader
+from natsort import natsorted
 # import memory_profiler
 
 # 1. Answer Key & Points
@@ -445,7 +446,8 @@ def custom_print(message_to_print, log_file):
         of.write(message_to_print + '\n')
 
 def image_processor_generator(directory):
-    for filename in os.listdir(directory):
+    files = natsorted(os.listdir(directory))
+    for filename in files:
         if filename.endswith(('.png', '.jpg', '.jpeg')):
             path = os.path.join(directory, filename)
             with Image.open(path) as img:
@@ -581,7 +583,7 @@ def main():
                                                                     first_page=start_page, last_page=end_page)
                         
                         for j, img in enumerate(images):
-                            output_path = input_dir + "\\processed-" + str(page_count) + '.png'
+                            output_path = input_dir + "\\" + str(page_count) + '.png'
                             img.save(output_path)
                             page_count += 1
                         del images
@@ -595,7 +597,7 @@ def main():
                     images = convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
                                                                     first_page=start_page, last_page=end_page)
                     for i, img in enumerate(images):
-                        output_path = input_dir + "\\processed-" + str(page_count) + '.png'
+                        output_path = input_dir + "\\" + str(page_count) + '.png'
                         img.save(output_path)
                         page_count += 1
                     del images
