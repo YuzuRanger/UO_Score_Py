@@ -543,6 +543,7 @@ def main():
                 page_floor = num_pages // 50
                 page_modulo = num_pages % 50
                 start_page = 1
+                page_count = 1
                 if page_floor > 0:
                     for i in range(page_floor):
                         end_page = start_page + 49
@@ -553,20 +554,23 @@ def main():
                                                                     first_page=start_page, last_page=end_page)
                         
                         for j, img in enumerate(images):
-                            output_path = input_dir + "\\processed-" + str(j) + str(i) + '.png'
+                            output_path = input_dir + "\\processed-" + str(page_count) + '.png'
                             img.save(output_path)
+                            page_count += 1
                         del images
                         start_page += 50
                 if page_modulo > 0:
                     end_page = start_page + page_modulo - 1
+
                     print(f"Processing pages_as_images for {start_page} through {end_page} of {num_pages}...")
                     # pages_as_images.extend(convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
                     #                     first_page=start_page, last_page=end_page))
                     images = convert_from_path(pdf_path, dpi=300, poppler_path=local_poppler_path,
                                                                     first_page=start_page, last_page=end_page)
                     for i, img in enumerate(images):
-                        output_path = input_dir + "\\processed-" + str(i) + '.png'
+                        output_path = input_dir + "\\processed-" + str(page_count) + '.png'
                         img.save(output_path)
+                        page_count += 1
                     del images
 
                 print("PDF read successfully. Preparing to grade.")
