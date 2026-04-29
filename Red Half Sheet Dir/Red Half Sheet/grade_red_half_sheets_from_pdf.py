@@ -326,7 +326,7 @@ def process_scanned_page(image, student, log_file):
 
     # Test Form Letter/Number
     # looks like [False False  True False False False] when B is filled
-    test_form_grid = numpy_array_values[24, 15:21]
+    test_form_grid = numpy_array_values[24, 15:23]
     # print(test_form_grid)
     indices = np.where(test_form_grid)
     test_num = ''.join(map(str, indices[0]))
@@ -498,11 +498,38 @@ def main():
                         ANSWER_KEY_1[index] = CHOICE_INDEX.index(answer)
 
                     if row_dict['Form 2']:
-                        ANSWER_KEY_2[index] = CHOICE_INDEX.index(row_dict['Form 2'])
+                        answer = row_dict['Form 2']
+                        if len(answer) > 1:
+                            # print("multiple answers")
+                            list_answers = []
+                            for letter in answer:
+                                list_answers.append(CHOICE_INDEX.index(letter))
+                            ANSWER_KEY_2[index] = list_answers
+                        else:
+                            ANSWER_KEY_2[index] = CHOICE_INDEX.index(answer)
+
                     if row_dict['Form 3']:
-                        ANSWER_KEY_3[index] = CHOICE_INDEX.index(row_dict['Form 3'])
+                        answer = row_dict['Form 3']
+                        if len(answer) > 1:
+                            # print("multiple answers")
+                            list_answers = []
+                            for letter in answer:
+                                list_answers.append(CHOICE_INDEX.index(letter))
+                            ANSWER_KEY_3[index] = list_answers
+                        else:
+                            ANSWER_KEY_3[index] = CHOICE_INDEX.index(answer)
+
                     if row_dict['Form 4']:
-                        ANSWER_KEY_4[index] = CHOICE_INDEX.index(row_dict['Form 4'])
+                        answer = row_dict['Form 4']
+                        if len(answer) > 1:
+                            # print("multiple answers")
+                            list_answers = []
+                            for letter in answer:
+                                list_answers.append(CHOICE_INDEX.index(letter))
+                            ANSWER_KEY_4[index] = list_answers
+                        else:
+                            ANSWER_KEY_4[index] = CHOICE_INDEX.index(answer)
+                    
                     if row_dict['Points']:
                         POINT_VALUES[index] = int(row_dict['Points'])
 
