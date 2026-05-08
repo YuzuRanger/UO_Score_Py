@@ -368,14 +368,14 @@ def process_scanned_page(image, student, log_file):
     count_limit = len(answer_key)
     question_iterator = 1
     column_iterator = 0
-    for column_iterator in range(1):
+    for column_iterator in range(2):
         if question_iterator - 1 > count_limit:
             break
 
         if column_iterator == 0:
             test_form_grid = numpy_array_values[0:50, 1:6]
         elif column_iterator == 1:
-            test_form_grid = numpy_array_values[35:50, 8:13]
+            test_form_grid = numpy_array_values[0:50, 8:13]
 
         for detections in test_form_grid:
             if question_iterator > count_limit:
